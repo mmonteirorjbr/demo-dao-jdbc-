@@ -15,14 +15,13 @@ public class ProgramaAcessaDados {
 	   Vendedor vendedor = new Vendedor(21,"Beto", "beto@gmail.com", new Date(), 3000.0, obj);
 	  */
 		
-		
 	   VendedorDao vendedorDao = FabricaDao.createVendedorDao();
 	   
+	   System.out.println("=== TESTE 1 : vendedor findbyId ====");
 	   Vendedor vendedor = vendedorDao.findById(3);
 	   
 	   System.out.println(vendedor);    
-	    // parei no video 19 na hroa de fazer o commit 17:00mins
-	   // limpar a branch no githubb e comecar de novo   
+	   
 	   
 	   
 	}

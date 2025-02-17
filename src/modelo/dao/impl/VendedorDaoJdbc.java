@@ -57,20 +57,16 @@ public class VendedorDaoJdbc implements  VendedorDao{
 			rs = st.executeQuery();
 			// se o retonar false , retorna nulo, se de verdadeiro ai puxa os dados 
 			if (rs.next()) {
+				 //versao original antes de reutilizar a instanciacao no video 20. o codigo foi transferido
+				//para o metodo instanciarDepartamento mais abaixo
 				 //Aqui nós instanciamos o departamnto e setamos os valores dele
-				Departamento dep = new Departamento();
+				/* Departamento dep = new Departamento();
 				dep .setId(rs.getInt("DepartmentId")); // Puxa o dados usando o nome da coluna no banco
 				dep.setNome(rs.getString("DepName"));
-				Vendedor obj = new Vendedor();
-				obj.setId(rs.getInt("Id"));
-				obj.setNome(rs.getString("Name"));
-				obj.setEmail(rs.getString("Email"));
-				obj.setSalarioBase(rs.getDouble("BaseSalary"));
-				obj.setNascimento(rs.getDate("BirthDate"));
+				*/ 
 				
-				// aqui ao inves de pegar o valor do campo estou pegando o objeto dep que e o registro 
-				// da tabela department associada				
-				obj.setDepartamento(dep);
+				Departamento dep = instanciarDepartamento(rs); 
+				Vendedor obj = instanciarVendedor(rs,dep);
 				return obj;
 			}
 			return null;
@@ -84,6 +80,30 @@ public class VendedorDaoJdbc implements  VendedorDao{
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}	
+	}
+
+	private Vendedor instanciarVendedor(ResultSet rs, Departamento dep) throws SQLException {
+		Vendedor obj = new Vendedor();
+		obj.setId(rs.getInt("Id"));
+		obj.setNome(rs.getString("Name"));
+		obj.setEmail(rs.getString("Email"));
+		obj.setSalarioBase(rs.getDouble("BaseSalary"));
+		obj.setNascimento(rs.getDate("BirthDate"));
+		
+		// aqui ao inves de pegar o valor do campo estou pegando o objeto dep que e o registro 
+		// da tabela department associada				
+		obj.setDepartamento(dep);
+		return obj;
+		
+		
+	
+	}
+
+	private Departamento instanciarDepartamento(ResultSet rs) throws SQLException {
+		 Departamento dep = new Departamento();
+		dep .setId(rs.getInt("DepartmentId")); // Puxa o dados usando o nome da coluna no banco
+		dep.setNome(rs.getString("DepName"));
+	return dep;
 	}
 
 	@Override
