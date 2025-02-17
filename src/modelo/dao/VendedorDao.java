@@ -2,6 +2,7 @@ package modelo.dao;
 
 import java.util.List;
 
+import modelo.entidades.Departamento;
 import modelo.entidades.Vendedor;
 
 public interface VendedorDao {
@@ -17,6 +18,7 @@ public interface VendedorDao {
     
     //para implementar um findAll vai usar uma lista 
     List<Vendedor> findAll();
+    List<Vendedor> findByDepartment( Departamento departamento);
     
    
 }

@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -110,6 +113,78 @@ public class VendedorDaoJdbc implements  VendedorDao{
 	public List<Vendedor> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Vendedor> findByDepartment(Departamento departamento) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+	     // nao preciso criar uma conexao com o banco aqui porque o nosso DAO vai ter uma dependencia com a conexao
+		// vou usar o bjeto conn criado la em cima
+		try {
+			//Inciia o prepareStament - st
+			st = conn.prepareStatement(
+					"SELECT seller.*, department.Name as DepName "
+					+ " FROM seller INNER JOIN department " 
+					+ "	ON seller.departmentID = department.Id "
+					+ " WHERE DepartmentId = ?"
+					+ " ORDER BY  Name");
+			
+			// para fazer a pesquisa vai passar como parametro o Id que foi recebido na chamada
+			// e em seguida executa a query
+			st.setInt(1,  departamento.getId());
+			rs = st.executeQuery();
+			
+			//Declara a lista que vai receber os dados
+			List<Vendedor> lista = new ArrayList();
+			
+            //para evitar a repeticao do departamento ele vai usar o map que é um mapa de chave  e valor 
+			
+			Map<Integer, Departamento> map = new HashMap<>();
+			
+			// se o retonar false , retorna nulo, se de verdadeiro ai puxa os dados
+			// no vendedor foi um if porque ele retorna um registro. no caso do departamento pode retornar mais de 
+			// um registro entao faz um while
+			
+			// 
+			while  (rs.next()) {
+				 //versao original antes de reutilizar a instanciacao no video 20. o codigo foi transferido
+				//para o metodo instanciarDepartamento mais abaixo
+				 //Aqui nós instanciamos o departamnto e setamos os valores dele
+				/* Departamento dep = new Departamento();
+				dep .setId(rs.getInt("DepartmentId")); // Puxa o dados usando o nome da coluna no banco
+				dep.setNome(rs.getString("DepName"));
+				*/ 
+				
+				
+				// antes de instanciar vai verificar se o departamento ja existe no map
+				// faz a pesquisa com o registro corrente da lista vendo se o departamento ja existe
+				Departamento dep = map.get(rs.getInt("DepartmentId"));
+
+				
+				//se nao existe faz a instanciacao do departamento
+				if (dep == null)  {
+					dep = instanciarDepartamento(rs);
+					// ai incluir o departamento no mapa
+					map.put(rs.getInt("DepartmentId"), dep);
+					
+				}
+				 
+				Vendedor obj = instanciarVendedor(rs,dep);
+				lista.add(obj);
+			}
+			return lista;
+		}
+		catch(SQLException e) {
+			 throw new DbException(e.getMessage());
+		}
+		finally {
+			 // nao fechou as conexoes porque o mesmo objeto DAO pode servir para mais de uma operacao
+			// mas tem d efehcar os recursos de acesso ao banco pra esse item
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}	
+		
 	}
 
 }

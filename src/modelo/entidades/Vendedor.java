@@ -7,9 +7,6 @@ import java.util.Objects;
 public class Vendedor implements Serializable{
 
 	
-	// parei o video 16 aos 03:25 
-	
-	
 	
 	private static final long serialVersionUID = 1L;
 	// ao colocar o "implements Serializable" ele deu o aviso amarelo , cliquei nele e

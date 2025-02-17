@@ -1,7 +1,10 @@
 package applicacao;
 
+import java.util.List;
+
 import modelo.dao.FabricaDao;
 import modelo.dao.VendedorDao;
+import modelo.entidades.Departamento;
 import modelo.entidades.Vendedor;
 
 public class ProgramaAcessaDados {
@@ -18,11 +21,18 @@ public class ProgramaAcessaDados {
 	   VendedorDao vendedorDao = FabricaDao.createVendedorDao();
 	   
 	   System.out.println("=== TESTE 1 : vendedor findbyId ====");
-	   Vendedor vendedor = vendedorDao.findById(3);
-	   
+	   Vendedor vendedor = vendedorDao.findById(3);	   
 	   System.out.println(vendedor);    
 	   
-	   
+	   System.out.println("=== TESTE 2 : vendedor findbyDepartment ====");
+	   //faz a chamada do departamento para pegar o codigo do departamento 
+	   Departamento departamento = new Departamento(2,null); 
+       List<Vendedor> lista =  vendedorDao.findByDepartment(departamento);   
+       for (Vendedor obj : lista) {
+    	   System.out.println(obj);    
+    	      
+       }
+	   	   
 	   
 	}
     
