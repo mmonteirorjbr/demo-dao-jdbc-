@@ -32,7 +32,14 @@ public class ProgramaAcessaDados {
     	   System.out.println(obj);    
     	      
        }
-	   	   
+	   	
+       System.out.println("=== TESTE 3 : vendedor findAll ====");
+       // aqui nao declara a variavel lista porque ja foi declarada mais acima e a esta usando de novo
+	   lista =  vendedorDao.findAll();   
+       for (Vendedor obj : lista) {
+    	   System.out.println(obj);    
+    	      
+       }
 	   
 	}
     
