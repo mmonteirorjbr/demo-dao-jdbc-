@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,12 +28,73 @@ public class VendedorDaoJdbc implements  VendedorDao{
 	   
 	@Override
 	public void insert(Vendedor obj) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					" INSERT INTO seller "
+				+   " (Name, Email,BirthDate, BaseSalary, DepartmentID) "
+				+   " VALUES "
+				+   " (?,?,?,?,?)",
+				Statement.RETURN_GENERATED_KEYS); // Retorna a chave gerada com o ID do registro.
+			
+			st.setString(1, obj.getNome());
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getNascimento().getTime()));
+			st.setDouble(4, obj.getSalarioBase());
+			st.setInt(5,obj.getDepartamento().getId());
+
+			int linhasRetornadas = st.executeUpdate();
+			  
+			if (linhasRetornadas >0 ) {
+				ResultSet rs = st.getGeneratedKeys();
+				if ( rs.next()) {
+					int id = rs.getInt(1);
+					// insere o ID gerado no obj para que fique populado com o ID dele.
+					obj.setId(id);
+				}
+				// fecha p rs pgp aqui mesmo pq nao vai usar de novo, nao precisa esperar o finally
+				DB.closeResultSet(rs);
+			}
+			else {
+				 throw new  DbException("Erro ineperado! Nehuma linha retornada!");
+			}
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());			
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+		
 	}
 
 	@Override
 	public void update(Vendedor obj) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					" UPDATE seller "
+				+   " SET Name =? , Email = ? ,BirthDate = ? , BaseSalary =? , DepartmentID = ?  "
+				+   " WHERE Id = ?  ");
+				
+				
+			st.setString(1, obj.getNome());
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getNascimento().getTime()));
+			st.setDouble(4, obj.getSalarioBase());
+			st.setInt(5,obj.getDepartamento().getId());
+            st.setInt(6,obj.getId());   
+			
+            st.executeUpdate();
+			  
+		}	
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());			
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+	
 	}
 
 	@Override
