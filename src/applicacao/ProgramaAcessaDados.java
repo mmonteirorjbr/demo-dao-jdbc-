@@ -2,6 +2,7 @@ package applicacao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import modelo.dao.FabricaDao;
 import modelo.dao.VendedorDao;
@@ -11,7 +12,9 @@ import modelo.entidades.Vendedor;
 public class ProgramaAcessaDados {
 
 	public static void main(String[] args) {
-	// Os itens abaixo foram retirados depois dos testes, aqui no comeco eu incluia u mn registro novo . 	
+	// Os itens abaixo foram retirados depois dos testes, aqui no comeco eu incluia u mn registro novo .
+		
+		Scanner sc = new Scanner(System.in); 
 		
 	  System.out.println("=== TESTE 0 : vendedor findbyId ====");
 	   
@@ -59,6 +62,14 @@ public class ProgramaAcessaDados {
        vendedor.setNome("Martha Waine");
        vendedorDao.update(vendedor);
        System.out.println("Update completo");
+       
+       System.out.println("\n=== TESTE 6 : vendedor delete ====");
+       System.out.println("Digite o Id para o teste de exclusao");
+       int id = sc.nextInt();
+       vendedorDao.deleteById(id);
+       System.out.println("Delete completed");
+       
+       sc.close();
        
        
        
